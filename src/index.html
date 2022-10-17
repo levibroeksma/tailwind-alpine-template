@@ -7,23 +7,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../dist/tailwind/output.css" />
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <title>Tailwind & Alpine.JS template</title>
+    <!-- Configuration -->
+    <script src="./config.js"></script>
+    <title>Compound interest calculator</title>
 </head>
 
-<body class="h-screen w-full">
-    <div class="flex flex-col text-gray-400 justify-center items-center h-full w-full">
-        <h1 class="font-bold text-2xl mb-8">Tailwind template with alpineJS</h1>
-        <div x-data="alpineMain()" class="border p-4 rounded-lg w-full max-w-md text-center justify-center">
-            <h2>Count: <span class="text-purple-600 font-bold text-2xl" x-text="counter"></span></h2>
-            <div class="w-full flex justify-between">
-                <button class="w-1/4 border border-slate-800 rounded-md py-2 text-slate-800" @click="counter = counter - 1">
-                    down
-                </button>
-                <button class="w-1/4 border border-slate-800 rounded-md py-2 text-slate-800" @click="counter = counter + 1">up</button>
+<body class="min-h-screen flex flex-col justify-between w-full relative box-border" x-data="alpineMain()">
+    <div class="flex flex-col text-gray-400 justify-center items-center h-full w-full p-24">
+        <h1 class="font-bold text-2xl mb-8">Compound interest calculator</h1>
+        <div class="border p-4 rounded-lg w-full max-w-md text-center justify-center" x-data="calculatorData()">
+            <form @submit.prevent="submit()" id="calculatorForm" class="py-4">
+                <section class="flex flex-col justify-start items-start">
+                    <label for="input1" class="text-xs font-medium">Input 1:</label>
+                    <input type="text" id="input1" class="border-b border-slate-800 w-full p-2 placeholder:italic"
+                        placeholder="placeholder ...">
+                </section>
+                <section class="flex flex-col justify-start items-start">
+                    <label for="input2" class="text-xs font-medium">Input 1:</label>
+                    <input type="text" id="input2" class="border-b border-slate-800 w-full p-2 placeholder:italic"
+                        placeholder="placeholder ...">
+                </section>
+            </form>
+            <div class="border-t-2 border-violet-700 p-4">
+                <button
+                    class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
+                    @click="handleCalculations(192, 'cosmos', 'year', 1, 10.16, 2, 'euros')">Year</button>
+                <button
+                    class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
+                    @click="handleCalculations(192, 'cosmos', 'month', 1, 10.16, 2, 'euros')">Month</button>
+                <button
+                    class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
+                    @click="handleCalculations(192, 'cosmos', 'week', 1, 10.16, 2, 'euros')">Week</button>
+                <button
+                    class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
+                    @click="handleCalculations(192, 'cosmos', 'day', 1, 10.16, 2, 'euros')">Day</button>
             </div>
         </div>
     </div>
+    <footer class="w-full border-t border-slate-800 py-1 text-center">
+        <h2 class="text-xs text-slate-500">Version: <span x-text="app_config.version"></span> </span></h2>
+    </footer>
+    <!-- Scripts -->
     <script src="./alpine_main.js"></script>
+    <script src="./js/alpine_calculator.js"></script>
+
 </body>
 
 </html>
