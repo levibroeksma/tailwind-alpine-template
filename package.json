@@ -4,7 +4,7 @@
   "description": "tailwind template",
   "main": "index.html",
   "scripts": {
-    "test": "initiate-test"
+    "start": "npx tailwindcss -i ./input.css -o ./dist/tailwind/output.css --watch"
   },
   "author": "Levi Broeksma",
   "license": "ISC",

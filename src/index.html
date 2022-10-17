@@ -13,11 +13,12 @@
 </head>
 
 <body class="min-h-screen flex flex-col justify-between w-full relative box-border" x-data="alpineMain()">
+
   <div class="flex flex-col text-slate-700 justify-center items-center h-full w-full p-24">
     <h1 class="font-bold text-2xl mb-8">Compound interest calculator</h1>
     <div class="border p-4 rounded-lg w-full max-w-2xl text-center justify-center" x-data="calculatorData()">
 
-      <form @submit.prevent="submit" id="calculatorForm" class="py-4 flex flex-col gap-4">
+      <form @submit.prevent="submit" id="calculatorForm" class="py-4 flex flex-col gap-4" x-show="show.calculator === true">
         <section class="flex flex-wrap">
           <div class="w-1/2 box-border flex flex-col p-4">
             <label for="coin_amount" class="text-xs font-medium text-left mb-1">Amount of coins</label>
@@ -68,17 +69,13 @@
         <button type="submit"
           class="w-full border-2 border-slate-800 p-2 text-slate-800 hover:bg-slate-800 hover:text-gray-50">Calculate</button>
       </form>
-      <!-- Fire specific functions -->
-      <div class="border-t-2 border-violet-700 p-4">
-        <button class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
-          @click="handleCalculations(192, 'year', 1, 10.16, 2, 'euros')">Year</button>
-        <button class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
-          @click="handleCalculations(192, 'month', 1, 10.16, 2, 'euros')">Month</button>
-        <button class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
-          @click="handleCalculations(192, 'week', 1, 10.16, 2, 'euros')">Week</button>
-        <button class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
-          @click="handleCalculations(192, 'day', 1, 10.16, 2, 'euros')">Day</button>
+
+      <!-- Results -->
+      <div class="py-4 flex flex-col gap-4" x-show="show.results === true">
+        <h1 class="font-bold text-xxl text-slate-700" x-text="counter"></h1>
+        <button class="w-full border-2 border-slate-800 p-2 text-slate-800 hover:bg-slate-800 hover:text-gray-50" @click="goBack()">Go back to calculator</button>
       </div>
+    
     </div>
   </div>
   <footer class="w-full border-t border-slate-800 py-1 text-center">
