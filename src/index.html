@@ -2,54 +2,91 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../dist/tailwind/output.css" />
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- Configuration -->
-    <script src="./config.js"></script>
-    <title>Compound interest calculator</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../dist/tailwind/output.css" />
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Configuration -->
+  <script src="./config.js"></script>
+  <title>Compound interest calculator</title>
 </head>
 
 <body class="min-h-screen flex flex-col justify-between w-full relative box-border" x-data="alpineMain()">
-    <div class="flex flex-col text-gray-400 justify-center items-center h-full w-full p-24">
-        <h1 class="font-bold text-2xl mb-8">Compound interest calculator</h1>
-        <div class="border p-4 rounded-lg w-full max-w-md text-center justify-center" x-data="calculatorData()">
-            <form @submit.prevent="submit()" id="calculatorForm" class="py-4">
-                <section class="flex flex-col justify-start items-start">
-                    <label for="input1" class="text-xs font-medium">Input 1:</label>
-                    <input type="text" id="input1" class="border-b border-slate-800 w-full p-2 placeholder:italic"
-                        placeholder="placeholder ...">
-                </section>
-                <section class="flex flex-col justify-start items-start">
-                    <label for="input2" class="text-xs font-medium">Input 1:</label>
-                    <input type="text" id="input2" class="border-b border-slate-800 w-full p-2 placeholder:italic"
-                        placeholder="placeholder ...">
-                </section>
-            </form>
-            <div class="border-t-2 border-violet-700 p-4">
-                <button
-                    class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
-                    @click="handleCalculations(192, 'cosmos', 'year', 1, 10.16, 2, 'euros')">Year</button>
-                <button
-                    class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
-                    @click="handleCalculations(192, 'cosmos', 'month', 1, 10.16, 2, 'euros')">Month</button>
-                <button
-                    class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
-                    @click="handleCalculations(192, 'cosmos', 'week', 1, 10.16, 2, 'euros')">Week</button>
-                <button
-                    class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
-                    @click="handleCalculations(192, 'cosmos', 'day', 1, 10.16, 2, 'euros')">Day</button>
-            </div>
-        </div>
+  <div class="flex flex-col text-slate-700 justify-center items-center h-full w-full p-24">
+    <h1 class="font-bold text-2xl mb-8">Compound interest calculator</h1>
+    <div class="border p-4 rounded-lg w-full max-w-2xl text-center justify-center" x-data="calculatorData()">
+
+      <form @submit.prevent="submit" id="calculatorForm" class="py-4 flex flex-col gap-4">
+        <section class="flex flex-wrap">
+          <div class="w-1/2 box-border flex flex-col p-4">
+            <label for="coin_amount" class="text-xs font-medium text-left mb-1">Amount of coins</label>
+            <input type="number" id="coin_amount"
+              class="border border-b-2 border-b-slate-800 w-full p-2 placeholder:italic" min="0"
+              x-model="form.amount_coins" :value="form.amount_coins" step="0.00000001">
+          </div>
+          <!-- interest ratio -->
+          <div class="w-1/4 box-border flex flex-col p-4">
+            <label for="interest_rate" class="text-xs font-medium text-left mb-1">Interest rate per year:</label>
+            <input type="number" id="interest_rate"
+              class="border border-b-2 border-b-slate-800 w-full p-2 placeholder:italic" x-model="form.interest_rate"
+              :value="form.interest_rate" step="0.01">
+          </div>
+          <!-- interest ratio -->
+          <div class="w-1/4 box-border flex flex-col p-4">
+            <label for="deviation" class="text-xs font-medium text-left mb-1">Interest deviation:</label>
+            <input type="number" id="deviation"
+              class="border border-b-2 border-b-slate-800 w-full p-2 placeholder:italic" x-model="form.deviation"
+              :value="form.deviation" min="0">
+          </div>
+          <div class="w-1/2 box-border flex flex-col p-4">
+            <label for="aggregation_period" class="text-xs font-medium text-left mb-1">
+              Planned duration of investment
+            </label>
+            <select class="appearance-none border border-slate-800 p-2" name="aggregation_period"
+              id="aggregation_period" x-model="form.duration">
+              <option disabled>Select calculation period</option>
+              <template x-for="(amount, index) in amount_of_years">
+                <option :key="index" :value="amount" x-text="amount + ' year period'"></option>
+              </template>
+            </select>
+          </div>
+          <div class="w-1/2 box-border flex flex-col p-4">
+            <label for="aggregation_period" class="text-xs font-medium text-left mb-1">
+              Planned duration of investment
+            </label>
+            <select class="appearance-none border border-slate-800 p-2" name="aggregation_period"
+              id="aggregation_period" x-model="form.interest_payout_frequency">
+              <option disabled>Select calculation period</option>
+              <template x-for="(payout, index) in payout_frequencies">
+                <option :key="index" :value="payout" x-text="'Payout of interest per ' + payout"></option>
+              </template>
+            </select>
+          </div>
+
+        </section>
+        <button type="submit"
+          class="w-full border-2 border-slate-800 p-2 text-slate-800 hover:bg-slate-800 hover:text-gray-50">Calculate</button>
+      </form>
+      <!-- Fire specific functions -->
+      <div class="border-t-2 border-violet-700 p-4">
+        <button class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
+          @click="handleCalculations(192, 'year', 1, 10.16, 2, 'euros')">Year</button>
+        <button class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
+          @click="handleCalculations(192, 'month', 1, 10.16, 2, 'euros')">Month</button>
+        <button class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
+          @click="handleCalculations(192, 'week', 1, 10.16, 2, 'euros')">Week</button>
+        <button class="bg-red-700 text-gray-50 px-4 py-2 border border-red-700 hover:bg-gray-50 hover:text-red-700"
+          @click="handleCalculations(192, 'day', 1, 10.16, 2, 'euros')">Day</button>
+      </div>
     </div>
-    <footer class="w-full border-t border-slate-800 py-1 text-center">
-        <h2 class="text-xs text-slate-500">Version: <span x-text="app_config.version"></span> </span></h2>
-    </footer>
-    <!-- Scripts -->
-    <script src="./alpine_main.js"></script>
-    <script src="./js/alpine_calculator.js"></script>
+  </div>
+  <footer class="w-full border-t border-slate-800 py-1 text-center">
+    <h2 class="text-xs text-slate-500">Version: <span x-text="app_config.version"></span> </span></h2>
+  </footer>
+  <!-- Scripts -->
+  <script src="./alpine_main.js"></script>
+  <script src="./js/alpine_calculator.js"></script>
 
 </body>
 

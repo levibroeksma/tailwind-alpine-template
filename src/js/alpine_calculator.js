@@ -6,45 +6,69 @@ document.addEventListener("alpine:init", () => {
 
       output: 0,
 
-      init() {
-         this.handleCalculations(192, 'cosmos', 'year', 1, 10.16, 2, 'euros')
+      amount_of_years: [1,5,10,15,20,25,30,35,40],
+      payout_frequencies: ["day", "week", "month", "year"],
+
+      form:{
+         amount_coins: 1.00000000,
+         interest_rate: 0.00,
+         duration: 1,
+         interest_payout_frequency: 'year',
+         deviation: 0
       },
 
-      handleCalculations(coins, coin_name, interest_payout_period, investment_duration, interest_rate, deviation) {
+      init() {
+         // this.handleCalculations(192, 'cosmos', 'year', 1, 10.16, 2, 'euros');
+      },
+
+      handleCalculations(data_obj) {
          const payout_periods_allowed = ["year", "month", "week", "day"];
-         if (!payout_periods_allowed.includes(interest_payout_period)) return;
 
-         const data_obj = {
-            total_coins: coins,
-            coin_name: coin_name,
-            incremation_period: interest_payout_period,
-            duration: investment_duration,
-            interest_rate: interest_rate,
-            deviation: deviation,
-         };
+         if (!payout_periods_allowed.includes(data_obj.interest_payout_frequency)) return;
+         console.log('values needed to continue are available');
+         // const calculation_data = {
+         //    total_coins: data_obj.amount_coins,
+         //    interest_payout_frequency: data_obj.interest_payout_frequency,
+         //    duration: data_obj.duration,
+         //    interest_rate: data_obj.interest_rate,
+         //    deviation: data_obj.deviation,
+         // };
 
-         console.log(data_obj);
+         console.log(data_obj.deviation);
 
-         console.log(' >> ', this.calculateInterest(data_obj));
+         if(data_obj && data_obj.deviation === 0) {
+            console.log(this.calculateInterest(data_obj));
+         } 
+
+         // TODO: fix that if deviation level is there you run code 3 times with different value of interest
 
       },
 
       submit() {
+         this.form.amount_coins = parseFloat(this.form.amount_coins);
+         this.form.interest_rate = parseFloat(this.form.interest_rate);
+         this.form.duration = parseInt(this.form.duration);
+         this.form.deviation = parseInt(this.form.deviation);
 
+         // console.log(this.form);
+         this.handleCalculations(this.form)
+         
       },
 
-      calculateInterest(data_obj) {
+      calculateInterest(data_obj, deviation) {
+         console.log('OULEH', data_obj);
          if (!data_obj) return;
-         this.output = data_obj.total_coins;
+
+         this.output = data_obj.amount_coins;
          let period_multiplier;
-         switch (data_obj.incremation_period) {
+         switch (data_obj.interest_payout_frequency) {
             case 'year':
                const muliplier_year = data_obj.interest_rate / 100 + 1;
 
                for (let i = 0; i < data_obj.duration; i++) {
                   this.output = this.output * muliplier_year;
                }
-               return { 'Output jaarlijkse uitbetaling': this.output }
+               return { 'Coins': this.output, 'period': data_obj.duration };
 
             case 'month':
                const per_month = (data_obj.interest_rate / 100) / 12;
@@ -56,7 +80,7 @@ document.addEventListener("alpine:init", () => {
                   this.output = this.output * multiplier_per_month;
                }
                
-               return { 'Output maandelijkse uitbetaling': this.output };
+               return { 'Coins': this.output, 'period': data_obj.duration };
 
             case 'week': 
                const per_week = (data_obj.interest_rate / 100) / 52;
@@ -68,7 +92,7 @@ document.addEventListener("alpine:init", () => {
                   this.output = this.output * multiplier_per_week;
                }
 
-               return { 'Output weekelijkse uitbetaling': this.output };
+               return { 'Coins': this.output, 'period': data_obj.duration };
 
             case 'day': 
                const per_day = (data_obj.interest_rate / 100) / 365;
@@ -80,7 +104,7 @@ document.addEventListener("alpine:init", () => {
                   this.output = this.output * multiplier_per_day;
                }
 
-               return { 'Output weekelijkse uitbetaling': this.output };
+               return { 'Coins': this.output, 'period': data_obj.duration };
 
             default:
                break;
