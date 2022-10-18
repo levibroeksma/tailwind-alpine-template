@@ -19,31 +19,31 @@
 
 <body class="min-h-screen flex flex-col justify-between w-full relative box-border" x-data="alpineMain()">
 
-  <div class="flex flex-col text-slate-700 justify-center items-center h-full w-full p-24">
-    <h1 class="font-bold text-2xl mb-8">Compound interest calculator</h1>
-    <div class="border p-4 rounded-lg w-full max-w-2xl text-center justify-center" x-data="calculatorData()">
+  <div class="flex flex-col text-slate-700 justify-center items-center h-full w-full p-8">
+    <h1 class="font-bold text-xxl mb-8 text-rose-600">Compound interest calculator</h1>
+    <div class="border p-4 rounded-lg w-full max-w-2xl text-center justify-center shadow-md shadow-rose-100" x-data="calculatorData()">
 
-      <form @submit.prevent="submit" id="calculatorForm" class="py-4 flex flex-col gap-4"
+      <form @submit.prevent="submit" id="calculatorForm" class="p-4 flex flex-col gap-4"
         x-show="show.calculator === true" x-cloak>
         <section class="flex flex-wrap">
-          <div class="w-1/2 box-border flex flex-col p-4">
-            <label for="coin_amount" class="text-xs font-medium text-left mb-1">Amount of coins</label>
+          <div class="w-1/2 box-border flex flex-col py-2 pr-4">
+            <label for="coin_amount" class="text-xs font-medium text-left mb-1 text-rose-600">Amount of coins</label>
             <input type="number" id="coin_amount"
-              class="border border-b-2 border-b-slate-800 w-full p-2 placeholder:italic" min="0"
+              class="border rounded-md border-rose-100 w-full p-2 placeholder:italic" min="0"
               x-model="form.amount_coins" :value="form.amount_coins" step="0.00000001">
           </div>
           <!-- interest ratio -->
-          <div class="w-2/4 box-border flex flex-col p-4">
-            <label for="interest_rate" class="text-xs font-medium text-left mb-1">Interest rate per year:</label>
+          <div class="w-2/4 box-border flex flex-col py-2 pl-4">
+            <label for="interest_rate" class="text-xs font-medium text-left mb-1 text-rose-600">Interest rate per year:</label>
             <input type="number" id="interest_rate"
-              class="border border-b-2 border-b-slate-800 w-full p-2 placeholder:italic" x-model="form.interest_rate"
+              class="border rounded-md border-rose-100 w-full p-2 placeholder:italic" x-model="form.interest_rate"
               :value="form.interest_rate" step="0.01">
           </div>
-          <div class="w-1/2 box-border flex flex-col p-4">
-            <label for="aggregation_period" class="text-xs font-medium text-left mb-1">
+          <div class="w-1/2 box-border flex flex-col py-2 pr-4">
+            <label for="aggregation_period" class="text-xs font-medium text-left mb-1 text-rose-600">
               Planned duration of investment
             </label>
-            <select class="appearance-none border border-slate-800 p-2" name="aggregation_period"
+            <select class="appearance-none border border-rose-100 rounded-md p-2" name="aggregation_period"
               id="aggregation_period" x-model="form.duration">
               <option disabled>Select calculation period</option>
               <template x-for="(amount, index) in amount_of_years">
@@ -51,11 +51,11 @@
               </template>
             </select>
           </div>
-          <div class="w-1/2 box-border flex flex-col p-4">
-            <label for="aggregation_period" class="text-xs font-medium text-left mb-1">
+          <div class="w-1/2 box-border flex flex-col py-2 pl-4">
+            <label for="aggregation_period" class="text-xs font-medium text-left mb-1 text-rose-600">
               Planned duration of investment
             </label>
-            <select class="appearance-none border border-slate-800 p-2" name="aggregation_period"
+            <select class="appearance-none border border-rose-100 rounded-md p-2" name="aggregation_period"
               id="aggregation_period" x-model="form.interest_payout_frequency">
               <option disabled>Select calculation period</option>
               <template x-for="(payout, index) in payout_frequencies">
@@ -66,28 +66,28 @@
 
         </section>
         <button type="submit"
-          class="w-full border-2 border-slate-800 p-2 text-slate-800 hover:bg-slate-800 hover:text-gray-50">Calculate</button>
+          class="w-full border-2 border-rose-600 rounded-md p-2 text-rose-600 hover:bg-rose-600 mt-4 hover:text-gray-50">Calculate</button>
       </form>
 
       <!-- Results -->
-      <div class="py-4 flex flex-col gap-4" x-show="show.results === true" x-cloak>
+      <div class="p-4 flex flex-col gap-4" x-show="show.results === true" x-cloak>
         <h1 class="font-bold text-xxl text-rose-600" x-text="counter + ' coins'"><span></span></h1>
-        <canvas id="myChart" width="400" height="200"></canvas>
-        <div class="flex flex-wrap">
+        <canvas x-show="show.chart === true" id="myChart" width="400" height="200" x-cloak></canvas>
+        <div class="flex flex-wrap box-border">
           <h2 class="w-full text-left border-b p-4 text-lg tracking-wider uppercase font-medium text-rose-600">Details</h2>
           <div class="w-full flex flex-col">
             <div class="w-full flex flex-wrap">
               <div class="w-1/3 px-4 py-3 leading-4 box-border flex flex-col text-left justify-center">
-                <span class="font-bold">Start amount</span>
+                <span class="font-bold text-rose-600">Start amount</span>
                 <small class="text-slate-600 font-light">Coins started with</small>
               </div>
               <div class="w-2/3 px-4 py-3 box-border border-l flex flex-col text-left justify-center">
                 <span x-text="form.amount_coins + ' coin(s)'"></span>
               </div>
             </div>
-            <div class="w-full flex flex-wrap bg-gray-100 rounded-md">
+            <div class="w-full flex flex-wrap bg-rose-50 rounded-md">
               <div class="w-1/3 px-4 py-3 leading-4 box-border flex flex-col text-left justify-center">
-                <span class="font-bold">APY</span>
+                <span class="font-bold text-rose-600">APY</span>
                 <small class="text-slate-600 font-light">Annual Percentage Yield</small>
               </div>
               <div class="w-2/3 px-4 py-3 box-border border-l flex flex-col text-left justify-center">
@@ -97,7 +97,7 @@
 
             <div class="flex flex-wrap">
               <div class="w-1/3 px-4 py-3 leading-4 box-border text-left flex flex-col justify-center">
-                <span class="font-bold">Duration</span>
+                <span class="font-bold text-rose-600">Duration</span>
                 <small class="text-slate-600 font-light">Planned period of investment</small>
               </div>
               <div class="w-2/3 px-4 py-3 box-border border-l text-left flex flex-col justify-center">
@@ -105,9 +105,9 @@
               </div>
             </div>
 
-            <div class="flex flex-wrap bg-gray-100 rounded-md">
+            <div class="flex flex-wrap bg-rose-50 rounded-md">
               <div class="w-1/3 px-4 py-3 leading-4 box-border text-left flex flex-col justify-center">
-                <span class="font-bold">Payout frequency</span>
+                <span class="font-bold text-rose-600">Payout frequency</span>
                 <small class="text-slate-600 font-light">Interest payout interval</small>
               </div>
               <div class="w-2/3 px-4 py-3 box-border border-l text-left flex flex-col justify-center">
@@ -116,8 +116,8 @@
             </div>
           </div>
         </div>
-        <button class="w-full border-2 border-slate-800 p-2 text-slate-800 hover:bg-slate-800  hover:text-gray-50"
-          @click="goBack()">Go back to calculator</button>
+        <button class="w-full border-2 border-rose-600 rounded-md p-2 text-rose-600 hover:bg-rose-600 mt-4 hover:text-gray-50"
+          @click="resetCalculator()">Go back to calculator</button>
       </div>
 
     </div>
