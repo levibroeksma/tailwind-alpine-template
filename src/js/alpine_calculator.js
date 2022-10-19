@@ -3,7 +3,6 @@
 document.addEventListener("alpine:init", () => {
    Alpine.data("calculatorData", () => ({
       // Variables
-
       output: 0,
       counter: 0,
       myChart: null,
@@ -18,8 +17,7 @@ document.addEventListener("alpine:init", () => {
          amount_coins: 1.00000000,
          interest_rate: 3.00,
          duration: 1,
-         interest_payout_frequency: 'year',
-         deviation: 0
+         interest_payout_frequency: 'day',
       },
 
       show: {
@@ -32,8 +30,7 @@ document.addEventListener("alpine:init", () => {
 
       },
 
-      buildChart(period) {
-
+      buildChart() {
          if (this.selected_frequency === 'year') {
             // waardes om te ontvangen
             for (let i = 0; i < this.value_arr.length; i++) {
@@ -62,6 +59,7 @@ document.addEventListener("alpine:init", () => {
                };
             };
          } else if (this.selected_frequency === 'day') {
+            console.log('ouleh',this.form);
             // waardes om te ontvangen
             for (let i = 0; i < this.value_arr.length; i++) {
                if (i === 0) {
@@ -70,13 +68,12 @@ document.addEventListener("alpine:init", () => {
                   this.label_arr.push(`${i} day(s)`);
                };
             };
-         }
-
+         };
 
          const data = {
             labels: this.label_arr,
             datasets: [{
-               label: '# increase of coins',
+               label: 'Increase of coins',
                data: this.value_arr,
                backgroundColor: [
                   'rgba(255, 99, 132, 0.2)'
@@ -111,28 +108,26 @@ document.addEventListener("alpine:init", () => {
          };
       },
 
-      handleCalculations(data_obj) {
-         // Check if value is correct
-         const payout_periods_allowed = ["year", "month", "week", "day"];
-         if (data_obj && !payout_periods_allowed.includes(data_obj.interest_payout_frequency)) return;
-         this.selected_frequency = data_obj.interest_payout_frequency;
-         //
-         const results = this.calculateInterest(data_obj);
-         this.showResults(results.Coins);
-
-         // FIXME: fix that if deviation level is there you run code 3 times with different value of interest
-
-      },
-
       submit() {
          // Format inputs correctly
          this.form.amount_coins = parseFloat(this.form.amount_coins);
          this.form.interest_rate = parseFloat(this.form.interest_rate);
          this.form.duration = parseInt(this.form.duration);
-         this.form.deviation = parseInt(this.form.deviation);
+
          // initiate calculations
          this.handleCalculations(this.form);
+      },
 
+      handleCalculations(data_obj) {
+         // Check if value is correct
+         const payout_periods_allowed = ["year", "month", "week", "day"];
+         if (data_obj && !payout_periods_allowed.includes(data_obj.interest_payout_frequency) || !data_obj) return;
+        
+         this.selected_frequency = data_obj.interest_payout_frequency;
+
+         const results = this.calculateInterest(data_obj);
+         console.log('ouleheh', results);
+         this.showResults(results.Coins);
       },
 
       calculateInterest(data_obj) {
@@ -140,7 +135,6 @@ document.addEventListener("alpine:init", () => {
 
          try {
             this.output = data_obj.amount_coins;
-
             let period_multiplier;
             switch (data_obj.interest_payout_frequency) {
                case 'year':
@@ -154,12 +148,10 @@ document.addEventListener("alpine:init", () => {
 
                   // add start amount to array for chart
                   this.value_arr.splice(0, 0, data_obj.amount_coins);
-
                   this.buildChart(data_obj.interest_payout_frequency);
 
                   return { 'Coins': this.output, 'period': data_obj.duration };
 
-               // TODO: Boven is klaar, onder moet gedaan worden.
                case 'month':
                   const per_month = (data_obj.interest_rate / 100) / 12;
                   const multiplier_per_month = per_month + 1;
@@ -171,7 +163,6 @@ document.addEventListener("alpine:init", () => {
                      this.output = this.output * multiplier_per_month;
                      this.value_arr.push(this.output);
                   };
-                  console.log(this.value_arr);
 
                   this.value_arr.splice(0, 0, data_obj.amount_coins);
                   this.buildChart(data_obj.interest_payout_frequency);
@@ -181,26 +172,36 @@ document.addEventListener("alpine:init", () => {
                case 'week':
                   const per_week = (data_obj.interest_rate / 100) / 52;
                   const multiplier_per_week = per_week + 1;
+                  this.value_arr = [];
 
                   period_multiplier = data_obj.duration * 52;
 
                   for (let i = 0; i < period_multiplier; i++) {
                      this.output = this.output * multiplier_per_week;
+                     this.value_arr.push(this.output);
                   };
+
+                  this.value_arr.splice(0, 0, data_obj.amount_coins);
+                  this.buildChart(data_obj.interest_payout_frequency);
 
                   return { 'Coins': this.output, 'period': data_obj.duration };
 
                case 'day':
                   const per_day = (data_obj.interest_rate / 100) / 365;
                   const multiplier_per_day = per_day + 1;
+                  this.value_arr = [];
 
                   period_multiplier = data_obj.duration * 365;
 
                   for (let i = 0; i < period_multiplier; i++) {
                      this.output = this.output * multiplier_per_day;
+                     this.value_arr.push(this.output);
                   };
+                  this.value_arr.splice(0, 0, data_obj.amount_coins);
 
-                  return { 'coins': this.output, 'period': data_obj.duration };
+                  this.buildChart(data_obj.interest_payout_frequency);
+
+                  return { 'Coins': this.output, 'period': data_obj.duration };
 
                default:
                   break;
@@ -215,6 +216,7 @@ document.addEventListener("alpine:init", () => {
          this.show.results = true;
          this.show.calculator = false;
          this.counter = 0;
+         console.log('el resulto >> ', result);
          const calculation = setInterval(() => {
             this.counter += 1;
          }, 5);
@@ -231,7 +233,7 @@ document.addEventListener("alpine:init", () => {
          this.show.calculator = true;
          this.show.chart = false;
          this.label_arr = [];
-      }
+      },
 
    }));
 });
