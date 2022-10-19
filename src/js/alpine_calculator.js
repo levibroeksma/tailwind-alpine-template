@@ -9,6 +9,10 @@ document.addEventListener("alpine:init", () => {
       amount_of_years: [1, 5, 10, 15, 20, 25, 30, 35, 40],
       payout_frequencies: ["day", "week", "month", "year"],
       selected_frequency: [],
+      calculation_result: '',
+      crypto_value: 0,
+      fiat_selection: '€',
+      total_value:'',
 
       value_arr: [],
       label_arr: [],
@@ -23,7 +27,9 @@ document.addEventListener("alpine:init", () => {
       show: {
          calculator: true,
          results: false,
-         chart: false
+         chart: false,
+         details: false,
+         fiat: false,
       },
 
       init() {
@@ -224,6 +230,7 @@ document.addEventListener("alpine:init", () => {
          setTimeout(() => {
             clearInterval(calculation);
             this.counter = result.toFixed(8);
+            this.calculation_result = this.counter;
          }, 1000);
       },
 
@@ -233,7 +240,17 @@ document.addEventListener("alpine:init", () => {
          this.show.calculator = true;
          this.show.chart = false;
          this.label_arr = [];
+         this.show.fiat = false;
+         this.total_value = '';
+         this.crypto_value = 0;
       },
+
+      calcFiat() {
+         this.total_value = this.crypto_value * this.calculation_result;
+         this.total_value = this.total_value.toFixed(2)
+         this.show.fiat = true;
+      }
+      
 
    }));
 });
